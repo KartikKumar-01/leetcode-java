@@ -7,6 +7,7 @@ class Solution {
         for(int x : nums) sum += x;
         if(sum % k != 0) return false;
         target = sum / k;
+        Arrays.sort(nums);
         return solve(nums, 0, 0, k, new boolean[n]);
     }
     private boolean solve(int[] nums, int j, int cur, int k, boolean[] vis){
