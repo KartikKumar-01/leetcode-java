@@ -2,8 +2,11 @@ class Solution {
     ArrayList<String> list = new ArrayList<>();
     char[] ch = {'a', 'b', 'c'};
     public String getHappyString(int n, int k) {
+        int total = 3 * (1 << (n - 1));
+        if(k > total) return "";
+        
         solve(n, '#', new StringBuilder());
-        Collections.sort(list);
+        // Collections.sort(list);
         if(k > list.size()) return "";
         return list.get(k - 1);
     }
