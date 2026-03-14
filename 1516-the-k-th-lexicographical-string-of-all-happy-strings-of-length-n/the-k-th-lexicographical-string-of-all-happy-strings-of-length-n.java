@@ -1,42 +1,26 @@
 class Solution {
-
-    ArrayList<String> list = new ArrayList<>();
-    char[] ch = {'a','b','c'};
-
     public String getHappyString(int n, int k) {
-
-        int block = 1 << (n-1);
-        int total = 3 * block;
-
+        int total = 3 * (1 << (n - 1));
         if(k > total) return "";
 
-        int charType = (k-1) / block;
+        char[] ch = {'a', 'b', 'c'};
+        char last = '#';
 
-        char first = ch[charType];
-
-        k = (k-1) % block + 1;
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(first);
-
-        solve(n, first, sb);
-
-        return list.get(k-1);
-    }
-
-    private void solve(int n, char last, StringBuilder cur){
-
-        if(cur.length() == n){
-            list.add(cur.toString());
-            return;
-        }
-
-        for(char c : ch){
-            if(c != last){
-                cur.append(c);
-                solve(n, c, cur);
-                cur.deleteCharAt(cur.length()-1);
+        StringBuilder res = new StringBuilder();
+        for(int i = 0; i < n; i++){
+            for(char c : ch){
+                if(c == last) continue;
+                int remaining = n - i - 1;
+                int blockSize = 1 << remaining;
+                if(k > blockSize){
+                    k -= blockSize;
+                }else {
+                    res.append(c);
+                    last = c;
+                    break;
+                }
             }
         }
+        return res.toString();
     }
 }
