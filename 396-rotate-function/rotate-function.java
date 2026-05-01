@@ -2,17 +2,18 @@ class Solution {
     public int maxRotateFunction(int[] nums) {
         int n = nums.length;
 
-        int sum = Arrays.stream(nums).sum();
-        int[] dp = new int[n];
+        int sum = 0;
+        int f = 0;
         for(int i = 0; i < n; i++){
-            dp[0] += (i * nums[i]);
+            f += (i * nums[i]);
+            sum += nums[i];
         }
+        int ans = f;
         for(int i = 1; i < n; i++){
-            dp[i] = sum - (n) * nums[n - i] + dp[i - 1];
-            // System.out.println(dp[i]);
+            int t = sum - (n) * nums[n - i] + f;
+            f = t;
+            ans = Math.max(f, ans);
         }
-        int ans = Integer.MIN_VALUE;
-        for(int x : dp) ans = Math.max(ans, x);
         return ans;
     }
 } 
