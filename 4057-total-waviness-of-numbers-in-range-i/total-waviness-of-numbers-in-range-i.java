@@ -1,14 +1,18 @@
 class Solution {
-    public int totalWaviness(int num1, int num2) {
-        int ans = 0;
-        for(int num = num1; num <= num2; num++){
-            String s = String.valueOf(num);
-            for(int i = 1; i < s.length() - 1; i++){
-                if((s.charAt(i) > s.charAt(i - 1) && s.charAt(i) > s.charAt(i + 1)) || 
-                (s.charAt(i) < s.charAt(i - 1) && s.charAt(i) < s.charAt(i + 1))
-                ) ans++;
-            }
+    static int max = 100001;
+    static int[] dp = new int[max];
+    static int[] pref = new int[max];
+    static{
+        for(int i = 100; i < max; i++){
+            int r = i % 10;
+            int m = (i / 10) % 10;
+            int l = (i / 100) % 10;
+            int wave = m > Math.max(l, r) || m < Math.min(l, r) ? 1 : 0;
+            dp[i] = dp[i / 10] + wave;
+            pref[i] = pref[i - 1] + dp[i];
         }
-        return ans;
+    }
+    public int totalWaviness(int num1, int num2) {
+        return pref[num2] - pref[num1 - 1];
     }
 }
