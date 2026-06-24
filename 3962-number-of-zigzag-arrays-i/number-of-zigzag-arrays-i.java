@@ -1,34 +1,39 @@
 class Solution {
-    final int mod = (int) 1e9 + 7;
+    int mod = (int) 1e9 + 7;
     public int zigZagArrays(int n, int l, int r) {
         int m = r - l + 1;
         if(n == 1) return m;
-        int[][] up = new int[n + 1][m];
-        int[][] down = new int[n + 1][m];
-        for(int i = 0; i < m; i++){
-            up[2][i] = i; // two elements with x < y
-            down[2][i] = m - i - 1; // two element with x > y
-        }
+        int[][] up = new int[n + 1][m + 1];
+        int[][] down = new int[n + 1][m + 1];
 
-        for(int i = 3; i <= n; i++){
-            long[] prefup = new long[m + 1];
-            long[] prefdown = new long[m + 1];
-            for(int v = 0; v < m; v++){
-                prefup[v + 1] = (prefup[v] + up[i - 1][v]) % mod;
-                prefdown[v + 1] = (prefdown[v] + down[i - 1][v]) % mod;
+        for(int prev = 1; prev <= m; prev++){
+            up[n][prev] = 1;
+            down[n][prev] = 1;
+        }
+        for(int i = n - 1; i >= 0; i--){
+                int[] prefup = new int[m + 1];
+                int[] prefdown = new int[m + 1];
+                for(int val = 1; val <= m; val++){
+                    prefup[val] = (prefup[val - 1] + up[i + 1][val]) % mod;
+                    prefdown[val] = (prefdown[val - 1] + down[i + 1][val]) % mod;
+                }
+
+            for(int prev = 1; prev <= m; prev++){
+                // for(int next = prev + 1; next <= m; next++){
+                //     up[i][prev] = (up[i][prev] + down[i + 1][next]) % mod;
+                // }
+                up[i][prev] = (prefdown[m] - prefdown[prev] + mod) % mod;
+                // for(int next = 1; next < prev; next++){
+                //     down[i][prev] = (down[i][prev] + up[i + 1][next]) % mod;
+                // }
+                down[i][prev] = prefup[prev - 1] % mod;
             }
-
-            for(int v = 0; v < m; v++){
-                up[i][v] = (int)prefdown[v];
-                down[i][v] = (int) (prefup[m] - prefup[v + 1] + mod) % mod;
-            }
         }
-        long ans = 0;
-        for (int v = 0; v < m; v++) {
-            ans = (ans + up[n][v]) % mod;
-            ans = (ans + down[n][v]) % mod;
+        int ans = 0;
+        for(int start = 1; start <= m; start++){
+            ans = (ans + up[1][start]) % mod;
+            ans = (ans + down[1][start]) % mod;
         }
-
-        return (int) ans;
+        return ans;
     }
 }
