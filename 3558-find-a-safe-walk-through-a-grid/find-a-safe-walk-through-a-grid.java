@@ -5,32 +5,30 @@ class Solution {
         int m = grid.get(0).size();
 
         int[][] best = new int[n][m];
-        Queue<int[]> q = new LinkedList<>();
-        int sh = health - grid.get(0).get(0);
-        if(sh < 1) return false;
+        for(int[] b : best) Arrays.fill(b, Integer.MAX_VALUE);
+        best[0][0] = grid.get(0).get(0);
 
-        q.offer(new int[]{0, 0, sh});
-        best[0][0] = sh;
+        Deque<int[]> dq = new ArrayDeque<>();
+        dq.offerFirst(new int[]{0, 0, best[0][0]});
 
-        while(!q.isEmpty()){
-            int[] cur = q.poll();
+        while(!dq.isEmpty()){
+            int[] cur = dq.pollFirst();
             int i = cur[0];
             int j = cur[1];
-            int h = cur[2];
+            int cost = cur[2];
 
-            if(i == n - 1 && j == m - 1) return true;
-            
+            if(i == n - 1 && j == m - 1) return cost < health;
+
             for(int[] d : dir){
                 int r = i + d[0];
                 int c = j + d[1];
                 if(r < 0 || r >= n || c < 0 || c >= m) continue;
-                int nh = h - grid.get(r).get(c);
-                if(nh < 1) continue;
-
-                if(nh <= best[r][c]) continue;
-                best[r][c] = nh;
-                q.offer(new int[]{r, c, nh});
-                
+                int val = grid.get(r).get(c);
+                if(cost + val < best[r][c]){
+                    best[r][c] = cost + val;
+                    if(val == 0) dq.offerFirst(new int[]{r, c, best[r][c]});
+                    else dq.offerLast(new int[]{r, c, best[r][c]});
+                }
             }
         }
         return false;
