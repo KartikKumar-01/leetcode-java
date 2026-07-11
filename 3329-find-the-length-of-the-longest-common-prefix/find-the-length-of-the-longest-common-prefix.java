@@ -1,62 +1,34 @@
 class Solution {
-
-    class Node {
-        Node[] child;
-        boolean isEnd;
-
-        Node() {
-            child = new Node[10];
-            isEnd = false;
-        }
-    }
-
-    void insert(String word, Node root) {
-        Node temp = root;
-
-        for (char ch : word.toCharArray()) {
-            int idx = ch - '0';
-
-            if (temp.child[idx] == null) {
-                temp.child[idx] = new Node();
-            }
-
-            temp = temp.child[idx];
-        }
-
-        temp.isEnd = true;
-    }
-
-    int check(String str, Node root) {
-        Node temp = root;
-        int idx = 0;
-
-        while (idx < str.length()) {
-            int i = str.charAt(idx) - '0';
-
-            if (temp.child[i] != null) {
-                temp = temp.child[i];
-                idx++;
-            } else {
-                break;
-            }
-        }
-
-        return idx;
-    }
-
     public int longestCommonPrefix(int[] arr1, int[] arr2) {
-        Node root = new Node();
+        int n = arr1.length;
+        int b = arr2.length;
+        HashSet<Integer> set = new HashSet<>();
 
-        for (int x : arr2) {
-            insert(String.valueOf(x), root);
+        for(int num : arr1){
+            while(num > 0){
+                set.add(num);
+                num /= 10;
+            }
         }
-
         int ans = 0;
-
-        for (int x : arr1) {
-            ans = Math.max(ans, check(String.valueOf(x), root));
+        for(int num : arr2){
+            int count = len(num);
+            while(num > 0){
+                if(set.contains(num)){
+                    ans = Math.max(ans, count);
+                }
+                count--;
+                num /= 10;
+            }
         }
-
         return ans;
+    }
+    int len(int n){
+        int l = 0;
+        while(n > 0){
+            l++;
+            n /= 10;
+        }
+        return l;
     }
 }
