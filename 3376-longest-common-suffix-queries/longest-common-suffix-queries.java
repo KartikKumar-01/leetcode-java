@@ -1,56 +1,67 @@
 class Solution {
-    class TrieNode {
-        TrieNode[] children = new TrieNode[26];
-        int bestLen = Integer.MAX_VALUE;
-        int bestIdx = Integer.MAX_VALUE;
+    class TrieNode{
+        int bestLen;
+        int bestIdx;
+        boolean wordEnd;
+        TrieNode[] children;
+        TrieNode(int l, int i){
+            bestLen = l;
+            bestIdx = i;
+            wordEnd = false;
+            children = new TrieNode[26];
+        }
     }
+    class Trie{
+        TrieNode root;
+        Trie(){
+            root = new TrieNode(-1, -1);
+        }
 
+        public void insert(String s, int id){
+            TrieNode cur = root;
+            if(cur.bestLen == -1 || cur.bestLen > s.length() || (cur.bestLen == s.length() && cur.bestIdx > id)){
+                    cur.bestLen = s.length();
+                    cur.bestIdx = id;
+                }
+
+            for(int i = s.length() - 1; i >= 0; i--){
+                char c = s.charAt(i);
+                int idx = c - 'a';
+                if(cur.children[idx] == null) cur.children[idx] = new TrieNode(s.length(), id);
+                cur = cur.children[idx];
+                if(cur.bestLen == -1 || cur.bestLen > s.length() || (cur.bestLen == s.length() && cur.bestIdx > id)){
+                    cur.bestLen = s.length();
+                    cur.bestIdx = id;
+                }
+            }
+        }
+        public int query(String s){
+            TrieNode cur = root;
+            int ans = root.bestIdx;
+            for(int i = s.length() - 1; i >= 0; i--){
+                char c = s.charAt(i);
+                int idx = c - 'a';
+                
+                if(cur.children[idx] == null) break;
+                cur = cur.children[idx];
+                ans = cur.bestIdx;
+            }
+            return ans;
+        }
+    }
     public int[] stringIndices(String[] wordsContainer, String[] wordsQuery) {
-        TrieNode root = new TrieNode();
-        
-        for (int i = 0; i < wordsContainer.length; i++) {
-            String word = wordsContainer[i];
-            int len = word.length();
-            TrieNode curr = root;
-            
-            if (len < curr.bestLen || (len == curr.bestLen && i < curr.bestIdx)) {
-                curr.bestLen = len;
-                curr.bestIdx = i;
-            }
-            
-            for (int j = len - 1; j >= 0; j--) {
-                int charIdx = word.charAt(j) - 'a';
-                
-                if (curr.children[charIdx] == null) {
-                    curr.children[charIdx] = new TrieNode();
-                }
-                
-                curr = curr.children[charIdx];
-                
-                if (len < curr.bestLen || (len == curr.bestLen && i < curr.bestIdx)) {
-                    curr.bestLen = len;
-                    curr.bestIdx = i;
-                }
-            }
+        Trie trie = new Trie();
+        int n = wordsContainer.length;
+        for(int i = 0; i < n; i++){
+            trie.insert(wordsContainer[i], i);
         }
-        
-        int[] ans = new int[wordsQuery.length];
-        
-        for (int i = 0; i < wordsQuery.length; i++) {
-            String query = wordsQuery[i];
-            int len = query.length();
-            TrieNode curr = root;
-            
-            for (int j = len - 1; j >= 0; j--) {
-                int charIdx = query.charAt(j) - 'a';
-                if (curr.children[charIdx] == null) {
-                    break;
-                }
-                curr = curr.children[charIdx];
-            }
-            ans[i] = curr.bestIdx;
+
+        int q = wordsQuery.length;
+        int[] ans = new int[q];
+
+        for(int i = 0; i < q; i++){
+            ans[i] = trie.query(wordsQuery[i]);
         }
-        
         return ans;
     }
-} 
+}
