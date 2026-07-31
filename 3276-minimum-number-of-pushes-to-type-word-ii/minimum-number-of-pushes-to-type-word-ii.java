@@ -1,25 +1,17 @@
 class Solution {
     public int minimumPushes(String word) {
         int n = word.length();
-        HashMap<Character, Integer> map = new HashMap<>();
-        PriorityQueue<Character> pq = new PriorityQueue<>((x, y) -> Integer.compare(map.get(y), map.get(x)));
+        int[] freq = new int[26];
         for(char c : word.toCharArray()){
-            map.put(c, map.getOrDefault(c, 0) + 1);
+            freq[c - 'a']++;
         }
-        for(char c : map.keySet()){
-            pq.offer(c);
-        }
-
-        int key = 2;
-        int round = 1;
+        Arrays.sort(freq);
         int ans = 0;
-        while(!pq.isEmpty()){
-            if(key > 9) {
-                key = 2;
-                round++;
-            }
-            ans += (round * map.get(pq.poll()));
-            key++;
+        int round = 0;
+        for(int i = 25; i >= 0; i--){
+            if(freq[i] == 0) break;
+            ans += freq[i] * (round / 8 + 1);
+            round++;
         }
         return ans;
     }
