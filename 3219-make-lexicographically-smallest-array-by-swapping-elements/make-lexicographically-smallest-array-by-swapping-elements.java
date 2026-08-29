@@ -8,7 +8,6 @@ class Solution {
             return Integer.compare(x[0], y[0]);
         });
 
-        for(int[] x : list) System.out.println(Arrays.toString(x));
         List<int[]> comps = new ArrayList<>();
         int i = 0;
         int prev = list.get(0)[0];
@@ -21,7 +20,6 @@ class Solution {
             prev = cur;
         }
         if(n - i > 1) comps.add(new int[]{i, n - 1});
-        for(int[] x : comps) System.out.println(Arrays.toString(x));
 
         for(int[] comp : comps){
             int u = comp[0], v = comp[1];
