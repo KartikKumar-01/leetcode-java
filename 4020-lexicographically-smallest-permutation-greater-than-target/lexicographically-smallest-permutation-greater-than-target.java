@@ -1,53 +1,34 @@
 class Solution {
+    String result = "";
     public String lexGreaterPermutation(String s, String target) {
-        int[] cnt = new int[26];
-
-        for (char ch : s.toCharArray()) {
-            cnt[ch - 'a']++;
+        int n = s.length();
+        int[] freq = new int[26];
+        for(char c : s.toCharArray()){
+            freq[c - 'a']++;
+        }
+        solve(new StringBuilder(), 0, freq, target, false);
+        return result;
+    }
+    public boolean solve(StringBuilder cur, int i, int[] freq, String target, boolean greater){
+        if(i == target.length()){
+            if(greater){
+                result = cur.toString();
+                return true;
+            }
+            return false;
         }
 
-        for (char ch : target.toCharArray()) {
-            cnt[ch - 'a']--;
+        for(char c = 'a'; c <= 'z'; c++){
+            if(freq[c - 'a'] == 0)continue;
+            if(!greater && c < target.charAt(i)) continue;
+
+            cur.append(c);
+            freq[c - 'a']--;
+            boolean isGreater = greater || (c > target.charAt(i));
+            if(solve(cur, i + 1, freq, target, isGreater)) return true;
+            cur.deleteCharAt(cur.length() - 1);
+            freq[c - 'a']++;
         }
-
-        for (int i = target.length() - 1; i >= 0; i--) {
-            int cur = target.charAt(i) - 'a';
-            cnt[cur]++;
-
-            boolean ok = true;
-            for (int x : cnt) {
-                if (x < 0) {
-                    ok = false;
-                    break;
-                }
-            }
-
-            if (!ok) continue;
-
-            int next = -1;
-            for (int c = cur + 1; c < 26; c++) {
-                if (cnt[c] > 0) {
-                    next = c;
-                    break;
-                }
-            }
-
-            if (next == -1) continue;
-
-            cnt[next]--;
-
-            StringBuilder ans = new StringBuilder(target.substring(0, i));
-            ans.append((char) ('a' + next));
-
-            for (int c = 0; c < 26; c++) {
-                while (cnt[c]-- > 0) {
-                    ans.append((char) ('a' + c));
-                }
-            }
-
-            return ans.toString();
-        }
-
-        return "";
+        return false;
     }
 }
