@@ -1,7 +1,8 @@
 class Solution {
     public int minOperations(int[] nums, int x) {
         int n = nums.length;
-        int tar = Arrays.stream(nums).sum() - x;
+        int tar = -x;
+        for(int num : nums) tar += num;
         HashMap<Integer, Integer> map = new HashMap<>();
         map.put(0, -1);
         int mx = 0;
